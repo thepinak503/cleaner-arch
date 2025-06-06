@@ -1,5 +1,4 @@
 #!/bin/bash
-
 GREEN='\033[1;32m'
 YELLOW='\033[1;33m'
 CYAN='\033[1;36m'
@@ -13,8 +12,6 @@ else
 fi
 echo -e "${CYAN}Enabling paccache.timer for automatic cache cleanup...${RESET}"
 sudo systemctl enable --now paccache.timer
-
-# 3. Clean old package cache (keep last 3 versions)
 echo -e "${CYAN}Cleaning old package cache (keeping last 3 versions)...${RESET}"
 sudo paccache -r
 echo -e "${CYAN}Removing orphaned packages...${RESET}"
@@ -28,10 +25,7 @@ fi
 echo -e "${CYAN}Cleaning user cache in ~/.cache/...${RESET}"
 rm -rf ~/.cache/*
 echo -e "${GREEN}User cache cleaned.${RESET}"
-
-# 6. Vacuum systemd journal logs (keep only 100M)
 echo -e "${CYAN}Vacuuming systemd journal logs (keeping 100M)...${RESET}"
-sudo journalctl --vacuum-size=100M
-
+sudo journalctl --vacuum-size=1M
 echo -e "${GREEN}==== Maintenance Complete! ====${RESET}"
 echo -e "${YELLOW}Tip: Your system will now auto-clean the package cache weekly via systemd timer.${RESET}"
