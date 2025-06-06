@@ -1,41 +1,37 @@
 #!/bin/bash
 
-# Arch Linux Maintenance Script
-# Run as root for full functionality
-
-echo "==== Arch Linux Maintenance Script ===="
-
-# 1. Clean pacman cache (keep last 3 versions)
-echo "Cleaning old package cache (keeping last 3 versions)..."
+GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
+CYAN='\033[1;36m'
+RESET='\033[0m'
+echo -e "${CYAN}==== Arch Linux Maintenance Script ====${RESET}"
 if ! command -v paccache &> /dev/null; then
-    echo "paccache not found, installing pacman-contrib..."
+    echo -e "${YELLOW}Installing pacman-contrib for cache management...${RESET}"
     sudo pacman -Sy --noconfirm pacman-contrib
+else
+    echo -e "${GREEN}pacman-contrib is already installed.${RESET}"
 fi
+echo -e "${CYAN}Enabling paccache.timer for automatic cache cleanup...${RESET}"
+sudo systemctl enable --now paccache.timer
+
+# 3. Clean old package cache (keep last 3 versions)
+echo -e "${CYAN}Cleaning old package cache (keeping last 3 versions)...${RESET}"
 sudo paccache -r
-
-# 2. Optionally, remove ALL cached packages (uncomment to enable)
-echo "Removing all cached packages..."
-sudo pacman -Scc
-
-# 3. Remove orphaned packages
-echo "Removing orphaned packages..."
+echo -e "${CYAN}Removing orphaned packages...${RESET}"
 orphans=$(pacman -Qtdq)
 if [ -n "$orphans" ]; then
     sudo pacman -Rs --noconfirm $orphans
+    echo -e "${GREEN}Orphaned packages removed.${RESET}"
 else
-    echo "No orphaned packages found."
+    echo -e "${YELLOW}No orphaned packages found.${RESET}"
 fi
-
-# 4. Clean user cache
-echo "Cleaning user cache in ~/.cache/ ..."
+echo -e "${CYAN}Cleaning user cache in ~/.cache/...${RESET}"
 rm -rf ~/.cache/*
+echo -e "${GREEN}User cache cleaned.${RESET}"
 
-# 5. Vacuum systemd journal logs (keep only 100M)
-echo "Vacuuming systemd journal logs (keeping 100M)..."
+# 6. Vacuum systemd journal logs (keep only 100M)
+echo -e "${CYAN}Vacuuming systemd journal logs (keeping 100M)...${RESET}"
 sudo journalctl --vacuum-size=100M
 
-# 6. (Optional) Update system (uncomment to enable)
-echo "Updating system..."
-sudo pacman -Syu
-
-echo "==== Maintenance Complete ===="
+echo -e "${GREEN}==== Maintenance Complete! ====${RESET}"
+echo -e "${YELLOW}Tip: Your system will now auto-clean the package cache weekly via systemd timer.${RESET}"
