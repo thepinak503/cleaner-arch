@@ -5,4 +5,4 @@ this the arch linux cleaner script to save some disk space.
 ```bash
 curl -fsSL https://www.naturl.link/arch-cleaner | sh
 ```
-and done!
+write your user password in sudo prompt and done!
