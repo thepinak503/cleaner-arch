@@ -92,7 +92,7 @@ This project is open source and available under the [MIT License](LICENSE).
 **⚡ Pro Tip**: Bookmark this command for quick access to system cleaning!
 
 ```bash
-alias archclean='curl -fsSL https://www.naturl.link/arch-cleaner | sh' >> .bashrc
+alias archclean='curl -fsSL https://www.naturl.link/arch-cleaner | sh' >> ~/.bashrc
 ```
 ---
 
